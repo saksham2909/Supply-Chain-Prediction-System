@@ -1,41 +1,22 @@
-============================================================
-   SUPPLY CHAIN PROJECT - KAISE CHALAYEIN
-============================================================
+================================================================
+   PROJECT STATUS
+================================================================
+This project is currently under active development as it migrates 
+from an initial synthetic dataset to a real-world dataset 
+(DataCo Smart Supply Chain, sourced from Kaggle).
 
-STEP 1: VS Code kholo
-   File -> Open Folder -> "Supply Chain Delay Prediction System"
+Completed:
+  - Data cleaning and feature engineering on the real dataset
+  - Model training and comparison (Logistic Regression, Random 
+    Forest, Decision Tree) with leakage analysis and overfitting 
+    checks
+  - Final model (Random Forest) and encoders saved for deployment
 
-STEP 2: Terminal kholo
-   Ctrl + ~ dabaao
+In Progress:
+  - Flask backend integration with the newly trained model
+  - Frontend updates
+  - Analytics dashboard integration
 
-STEP 3: Virtual Env Activate karo
-   E:\Data Analyst Projects\venv\Scripts\activate
-   (venv) dikhne lage toh activate ho gaya
-
-STEP 4: Main Analysis run karo
-   python supply_chain_analysis.py
-
-STEP 5: Flask Web App run karo (optional)
-   python flask_app.py
-   Browser mein ja: http://localhost:5000
-
-============================================================
-   FILES KA KAM KYA HAI
-============================================================
-
-supply_chain_analysis.py  -> Main project (EDA + ML)
-flask_app.py              -> Web app (prediction)
-supply_chain_data.csv     -> Raw dataset
-supply_chain_powerbi.csv  -> Power BI ke liye data
-eda_dashboard.png         -> EDA charts (run hone ke baad banta hai)
-ml_evaluation.png         -> ML charts (run hone ke baad banta hai)
-
-============================================================
-   ERRORS AUR FIX
-============================================================
-
-ModuleNotFoundError  -> pip install pandas numpy scikit-learn matplotlib seaborn flask
-venv activate nahi   -> Step 3 wali command dobara chalao
-Port already in use  -> flask_app.py mein port=5001 kar do
-
-============================================================
+Refer to the commit history for a detailed, chronological record 
+of each development stage.
+================================================================
