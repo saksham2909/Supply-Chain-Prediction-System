@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+import joblib
+import os
 
 # cleaned dataset load kr rhe h
 
@@ -27,20 +29,27 @@ X = X.drop(columns=[
     "Customer Id",
     "Order Customer Id",
     "Order Item Id",
-    "Order Id"
+    "Order Id",
+    "Category Id",
+    "Department Id",
+    "Order Item Cardprod Id",
+    "Product Card Id",
+    "Product Category Id",
+    "order date (DateOrders)"
 ])
 
 y = df["Late_delivery_risk"]
 
-# categorical columns nikal rhe h
+# categorical columns ko label encode kr rhe h
 
 categorical_cols = X.select_dtypes(include="object").columns
 
-# categorical columns ko numbers me convert kr rhe h
+encoders = {}
 
 for col in categorical_cols:
     encoder = LabelEncoder()
     X[col] = encoder.fit_transform(X[col])
+    encoders[col] = encoder
 
 print("Total features:", len(X.columns))
 print(X.columns.tolist())
@@ -143,25 +152,16 @@ importance = pd.Series(
 
 print(importance.sort_values(ascending=False).head(15))
 
-# useless ID columns remove kr rhe h
 
-df = df.drop(columns=[
-    "Customer Id",
-    "Order Customer Id",
-    "Order Item Id",
-    "Order Id"
-])
 
 #Saving the models using joblib
 import joblib
 import os
 
-# models folder bana rhe h
-
+# Create a directory to save the models if it doesn't exist
 os.makedirs("models", exist_ok=True)
 
-# best model save kr rhe h
-
 joblib.dump(rf_model, "models/supply_chain_model.pkl")
+joblib.dump(encoders, "models/encoders.pkl")
 
-print("Model saved successfully")
+print("Model and encoders saved successfully")
