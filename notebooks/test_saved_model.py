@@ -25,3 +25,4 @@ X = X[model.feature_names_in_]
 prediction = model.predict(X.iloc[[0]])
 
 print("Prediction:", prediction[0])
+print(model.feature_names_in_.tolist())
