@@ -4,153 +4,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Supply Chain Delay Prediction</title>
+    <title>ChainSight — Delivery Risk Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0A0E1A;
+            --surface: #131B2E;
+            --surface-2: #1B2540;
+            --accent: #38BDF8;
+            --amber: #F97316;
+            --green: #34D399;
+            --text: #E2E8F0;
+            --text-dim: #8593AD;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 30px;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
         }
 
-        h1 {
-            text-align: center;
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .route-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .field {
-            display: flex;
-            flex-direction: column;
+        .route-path {
+            fill: none;
+            stroke: #22344F;
+            stroke-width: 1.5;
+            stroke-dasharray: 6 10;
         }
 
-        label {
-            margin-bottom: 6px;
-            font-weight: bold;
+        .route-dot {
+            fill: var(--accent);
+            filter: drop-shadow(0 0 6px var(--accent));
         }
 
-        input,
-        select {
-            padding: 9px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .route-anim {
+            offset-path: path('M -50,600 C 200,300 400,750 700,450 S 1100,150 1400,500 S 1700,250 1950,400');
+            animation: travel 14s linear infinite;
         }
 
-        button {
-            margin-top: 25px;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #result {
-            margin-top: 25px;
-            padding: 20px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
+        @keyframes travel {
+            0% {
+                offset-distance: 0%;
+                opacity: 0;
             }
+
+            5% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 1;
+            }
+
+            100% {
+                offset-distance: 100%;
+                opacity: 0;
+            }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(to right, #ffffff08 1px, transparent 1px),
+                linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 40%, transparent 90%);
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #38BDF822 0%, transparent 70%);
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .eyebrow {
+            letter-spacing: 0.18em;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .dropzone {
+            border: 1.5px dashed #2A3B5C;
+            background: linear-gradient(180deg, #131B2E 0%, #0F1626 100%);
+            transition: border-color 0.25s ease, background 0.25s ease;
+        }
+
+        .dropzone:hover,
+        .dropzone.drag {
+            border-color: var(--accent);
+            background: linear-gradient(180deg, #17223B 0%, #0F1626 100%);
+        }
+
+        .pulse-ring {
+            animation: pulse-ring 2.4s ease-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                box-shadow: 0 0 0 0 #38BDF855;
+            }
+
+            70% {
+                box-shadow: 0 0 0 14px #38BDF800;
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 #38BDF800;
+            }
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #0A0E1A;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
+    <div class="grid-overlay"></div>
+    <div class="glow-orb"></div>
 
-        <h1>Supply Chain Delay Prediction</h1>
+    <svg class="route-bg" viewBox="0 0 1950 900" preserveAspectRatio="xMidYMid slice">
+        <path class="route-path" d="M -50,600 C 200,300 400,750 700,450 S 1100,150 1400,500 S 1700,250 1950,400" />
+        <circle class="route-dot route-anim" r="5" />
+    </svg>
 
-        <form id="predictionForm">
+    <div class="content">
 
-            <div class="form-grid">
+        <!-- NAV -->
+        <nav class="max-w-6xl mx-auto flex items-center justify-between px-6 py-6">
+            <div class="font-display font-semibold text-lg tracking-tight flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[var(--accent)] pulse-ring"></span>
+                ChainSight
+            </div>
 
-                {% for feature in features %}
+            <div class="font-mono text-xs text-[var(--text-dim)]">
+                v2 · DataCo model
+            </div>
+        </nav>
 
-                <div class="field">
+        <!-- HERO -->
+        <section class="max-w-4xl mx-auto px-6 pt-20 pb-28 text-center">
 
-                    <label>{{ feature }}</label>
+            <p class="eyebrow font-mono uppercase reveal">
+                Predictive logistics
+            </p>
 
-                    {% if feature in encoders %}
+            <h1 class="font-display font-semibold text-5xl md:text-7xl leading-[1.05] mt-5 reveal">
+                Know a delay
+                <span class="block text-[var(--accent)]">before it ships.</span>
+            </h1>
 
-                    <select name="{{ feature }}" required>
-                        <option value="">Select {{ feature }}</option>
+            <p class="text-[var(--text-dim)] text-lg mt-6 max-w-xl mx-auto reveal">
+                Upload your order sheet. ChainSight flags every shipment likely to arrive
+                late — before it leaves the warehouse.
+            </p>
 
-                        {% for value in encoders[feature].classes_ %}
-                        <option value="{{ value }}">{{ value }}</option>
-                        {% endfor %}
+            <div class="mt-10 flex items-center justify-center gap-4 reveal">
+                <a href="#upload"
+                    class="bg-[var(--accent)] text-[#0A0E1A] font-medium px-6 py-3 rounded-lg hover:brightness-110 transition">
+                    Upload orders
+                </a>
 
-                    </select>
+                <a href="#how" class="text-[var(--text-dim)] px-6 py-3 hover:text-[var(--text)] transition">
+                    How it works →
+                </a>
+            </div>
 
-                    {% else %}
+            <!-- quick stat strip -->
+            <div class="mt-16 grid grid-cols-3 gap-4 max-w-lg mx-auto reveal">
 
-                    <input type="number" step="any" name="{{ feature }}" placeholder="Enter {{ feature }}" required>
-
-                    {% endif %}
-
+                <div>
+                    <div class="font-mono text-2xl text-[var(--green)]">
+                        76.5%
+                    </div>
+                    <div class="text-xs text-[var(--text-dim)] mt-1">
+                        model accuracy
+                    </div>
                 </div>
 
-                {% endfor %}
+                <div>
+                    <div class="font-mono text-2xl text-[var(--accent)]">
+                        180K+
+                    </div>
+                    <div class="text-xs text-[var(--text-dim)] mt-1">
+                        orders trained on
+                    </div>
+                </div>
+
+                <div>
+                    <div class="font-mono text-2xl text-[var(--amber)]">
+                        33
+                    </div>
+                    <div class="text-xs text-[var(--text-dim)] mt-1">
+                        signals analyzed
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- UPLOAD SECTION -->
+        <section id="upload" class="max-w-2xl mx-auto px-6 pb-32">
+
+            <div class="reveal">
+
+                <p class="eyebrow font-mono uppercase text-center">
+                    Step 01
+                </p>
+
+                <h2 class="font-display font-semibold text-3xl text-center mt-3">
+                    Upload your order file
+                </h2>
+
+                <p class="text-[var(--text-dim)] text-center mt-2 text-sm">
+                    CSV — we'll clean and score every row.
+                </p>
+
+                <!-- DROPZONE -->
+                <div id="dropzone" class="dropzone rounded-2xl mt-8 px-8 py-14 text-center cursor-pointer">
+
+                    <input type="file" id="fileInput" accept=".csv" hidden>
+
+                    <div class="w-12 h-12 mx-auto rounded-full bg-[var(--surface-2)]
+                    flex items-center justify-center mb-4">
+
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+
+                            <path d="M12 16V4M12 4l-4 4M12 4l4 4" />
+                            <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+
+                        </svg>
+
+                    </div>
+
+                    <p class="font-medium" id="fileText">
+                        Drag & drop your CSV here
+                    </p>
+
+                    <p class="text-[var(--text-dim)] text-sm mt-1">
+                        or click to browse · .csv
+                    </p>
+
+                </div>
+                <div id="results" class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-display text-xl font-semibold">Prediction Results</h3>
+                        <span id="result-count" class="font-mono text-xs text-[var(--text-dim)]"></span>
+                    </div>
+
+                    <div id="result-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
+                </div>
 
             </div>
 
-            <button type="submit">
-                Predict Delivery Risk
-            </button>
-
-        </form>
-
-        <div id="result"></div>
+        </section>
 
     </div>
 
-
     <script>
-        document.getElementById("predictionForm").addEventListener("submit", async function (event) {
-
-            event.preventDefault();
-
-            const formData = new FormData(this);
-
-            const response = await fetch("/predict", {
-                method: "POST",
-                body: formData
+        const items = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    io.unobserve(e.target);
+                }
             });
+        }, { threshold: 0.15 });
+        items.forEach(i => io.observe(i));
 
-            const result = await response.json();
+        const dropzone = document.querySelector('.dropzone');
+        const input = document.createElement('input');
 
-            const resultBox = document.getElementById("result");
+        input.type = 'file';
+        input.accept = '.csv';
+        input.hidden = true;
+        document.body.appendChild(input);
 
-            if (!response.ok) {
-                resultBox.innerHTML = "Error: " + result.error;
+        dropzone.onclick = () => input.click();
+
+        input.onchange = () => uploadFile(input.files[0]);
+
+        dropzone.ondragover = e => {
+            e.preventDefault();
+            dropzone.classList.add('drag');
+        };
+
+        dropzone.ondragleave = () => dropzone.classList.remove('drag');
+
+        dropzone.ondrop = e => {
+            e.preventDefault();
+            dropzone.classList.remove('drag');
+            uploadFile(e.dataTransfer.files[0]);
+        };
+
+        async function uploadFile(file) {
+            if (!file || !file.name.toLowerCase().endsWith('.csv')) {
+                alert('Please upload a CSV file.');
                 return;
             }
 
-            resultBox.innerHTML =
-                "Prediction: " + result.prediction +
-                "<br>Risk: " + result.risk_percentage + "%";
-        });
+            const formData = new FormData();
+            formData.append('file', file);
+
+            dropzone.querySelector('p').textContent = 'Processing ' + file.name + '...';
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.error);
+                return;
+            }
+
+            const results = document.getElementById('results');
+            const list = document.getElementById('result-list');
+            const count = document.getElementById('result-count');
+
+            list.innerHTML = '';
+
+            data.results.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'flex justify-between p-3 rounded-lg bg-[var(--surface-2)]';
+
+                row.innerHTML = `
+    <span>Order ${index + 1}</span>
+    <span>${item.prediction} · ${item.risk}% risk</span>
+  `;
+
+                list.appendChild(row);
+            });
+
+            count.textContent = `${data.results.length} orders`;
+            results.classList.remove('hidden');
+        }
     </script>
 
 </body>
