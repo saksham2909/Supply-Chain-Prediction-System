@@ -299,20 +299,58 @@
                     </p>
 
                 </div>
+                <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 mb-6">
+                    <div class="bg-[var(--surface)] rounded-xl p-5">
+                        <p class="text-xs text-[var(--text-dim)]">Total Orders</p>
+                        <p id="totalOrders" class="font-mono text-2xl mt-2">0</p>
+                    </div>
+
+                    <div class="bg-[var(--surface)] rounded-xl p-5">
+                        <p class="text-xs text-[var(--text-dim)]">Late Predictions</p>
+                        <p id="lateOrders" class="font-mono text-2xl text-[var(--amber)] mt-2">0</p>
+                    </div>
+
+                    <div class="bg-[var(--surface)] rounded-xl p-5">
+                        <p class="text-xs text-[var(--text-dim)]">On-Time</p>
+                        <p id="onTimeOrders" class="font-mono text-2xl text-[var(--green)] mt-2">0</p>
+                    </div>
+
+                    <div class="bg-[var(--surface)] rounded-xl p-5">
+                        <p class="text-xs text-[var(--text-dim)]">Average Risk</p>
+                        <p id="avgRisk" class="font-mono text-2xl text-[var(--accent)] mt-2">0%</p>
+                    </div>
+                </div>
                 <div id="results" class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-display text-xl font-semibold">Prediction Results</h3>
                         <span id="result-count" class="font-mono text-xs text-[var(--text-dim)]"></span>
                     </div>
 
-                    <div id="result-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
+                    <div class="overflow-x-auto rounded-xl border border-[#2A3B5C]">
+                        <div id="result-list" class="max-h-96 overflow-y-auto"></div>
+                    </div>
                 </div>
 
             </div>
 
         </section>
+        <!-- PROCESSING STATE -->
+        <div id="processing" class="hidden max-w-2xl mx-auto px-6 pb-20 text-center">
+            <div class="w-14 h-14 mx-auto rounded-full border-2 border-[var(--surface-2)]
+              border-t-[var(--accent)] animate-spin"></div>
 
+            <h3 class="font-display text-xl font-semibold mt-6">Analyzing your orders</h3>
+
+            <p id="processingText" class="font-mono text-xs text-[var(--accent)] mt-3">
+                Reading order data...
+            </p>
+
+            <div class="w-64 h-1 bg-[var(--surface-2)] rounded-full mx-auto mt-6 overflow-hidden">
+                <div class="h-full bg-[var(--accent)] animate-pulse w-2/3"></div>
+            </div>
+        </div>
     </div>
+
 
     <script>
         const items = document.querySelectorAll('.reveal');
@@ -350,6 +388,27 @@
             dropzone.classList.remove('drag');
             uploadFile(e.dataTransfer.files[0]);
         };
+        const processingMessages = [
+            "Analyzing orders...",
+            "Checking pipeline...",
+            "Filtering signals...",
+            "Running predictions...",
+            "Calculating risk..."
+        ];
+
+        let messageIndex = 0;
+        let messageTimer;
+
+        function startProcessingMessages() {
+            const text = document.getElementById("processingText");
+            messageIndex = 0;
+            text.textContent = processingMessages[0];
+
+            messageTimer = setInterval(() => {
+                messageIndex = (messageIndex + 1) % processingMessages.length;
+                text.textContent = processingMessages[messageIndex];
+            }, 900);
+        }
 
         async function uploadFile(file) {
             if (!file || !file.name.toLowerCase().endsWith('.csv')) {
@@ -362,10 +421,15 @@
 
             dropzone.querySelector('p').textContent = 'Processing ' + file.name + '...';
 
+            const processing = document.getElementById("processing");
+            processing.classList.remove("hidden");
+            startProcessingMessages();
+
             const response = await fetch('/predict', {
                 method: 'POST',
                 body: formData
             });
+
 
             const data = await response.json();
 
@@ -382,20 +446,63 @@
 
             data.results.forEach((item, index) => {
                 const row = document.createElement('div');
-                row.className = 'flex justify-between p-3 rounded-lg bg-[var(--surface-2)]';
+                row.className = 'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
+
+                let level;
+                let badgeClass;
+
+                if (item.risk < 35) {
+                    level = 'Low';
+                    badgeClass = 'text-[var(--green)] bg-[#34D39915]';
+                } else if (item.risk <= 70) {
+                    level = 'Medium';
+                    badgeClass = 'text-[var(--amber)] bg-[#F9731615]';
+                } else {
+                    level = 'High';
+                    badgeClass = 'text-red-400 bg-red-400/10';
+                }
 
                 row.innerHTML = `
-    <span>Order ${index + 1}</span>
-    <span>${item.prediction} · ${item.risk}% risk</span>
-  `;
+        <div class="flex items-center gap-4">
+            <span class="font-mono text-xs text-[var(--text-dim)]">
+                #${index + 1}
+            </span>
+            <span class="font-medium">
+                ${item.prediction}
+            </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <span class="font-mono text-sm">
+                ${item.risk.toFixed(1)}%
+            </span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
+                ${level}
+            </span>
+        </div>
+    `;
 
                 list.appendChild(row);
             });
 
+
+
             count.textContent = `${data.results.length} orders`;
+            const total = data.results.length;
+            const late = data.results.filter(r => r.prediction === "Late").length;
+            const onTime = total - late;
+            const avgRisk = data.results.reduce((sum, r) => sum + r.risk, 0) / total;
+
+            document.getElementById("totalOrders").textContent = total;
+            document.getElementById("lateOrders").textContent = late;
+            document.getElementById("onTimeOrders").textContent = onTime;
+            document.getElementById("avgRisk").textContent = avgRisk.toFixed(1) + "%";
             results.classList.remove('hidden');
+            processing.classList.add("hidden");
         }
+
     </script>
+
 
 </body>
 
