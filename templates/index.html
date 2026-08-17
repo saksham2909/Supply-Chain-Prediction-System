@@ -325,9 +325,17 @@
                         <h3 class="font-display text-xl font-semibold">Prediction Results</h3>
                         <span id="result-count" class="font-mono text-xs text-[var(--text-dim)]"></span>
                     </div>
+                    <button id="downloadBtn"
+                        class="hidden bg-[var(--accent)] text-[#0A0E1A] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition">
+                        Download CSV
+                    </button>
 
                     <div class="overflow-x-auto rounded-xl border border-[#2A3B5C]">
                         <div id="result-list" class="max-h-96 overflow-y-auto"></div>
+                        <button id="loadMoreBtn"
+                            class="hidden w-full mt-4 py-2 rounded-lg bg-[var(--surface-2)] text-sm text-[var(--text-dim)] hover:text-[var(--text)] transition">
+                            Load More
+                        </button>
                     </div>
                 </div>
 
@@ -351,9 +359,9 @@
         </div>
     </div>
 
-
     <script>
         const items = document.querySelectorAll('.reveal');
+
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
@@ -362,6 +370,7 @@
                 }
             });
         }, { threshold: 0.15 });
+
         items.forEach(i => io.observe(i));
 
         const dropzone = document.querySelector('.dropzone');
@@ -373,7 +382,6 @@
         document.body.appendChild(input);
 
         dropzone.onclick = () => input.click();
-
         input.onchange = () => uploadFile(input.files[0]);
 
         dropzone.ondragover = e => {
@@ -388,6 +396,7 @@
             dropzone.classList.remove('drag');
             uploadFile(e.dataTransfer.files[0]);
         };
+
         const processingMessages = [
             "Analyzing orders...",
             "Checking pipeline...",
@@ -410,6 +419,25 @@
             }, 900);
         }
 
+        function downloadResults(results) {
+            const rows = [["Order", "Prediction", "Risk %"]];
+
+            results.forEach((item, index) => {
+                rows.push([index + 1, item.prediction, item.risk]);
+            });
+
+            const csv = rows.map(row => row.join(",")).join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "chainsight_predictions.csv";
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+
         async function uploadFile(file) {
             if (!file || !file.name.toLowerCase().endsWith('.csv')) {
                 alert('Please upload a CSV file.');
@@ -430,7 +458,6 @@
                 body: formData
             });
 
-
             const data = await response.json();
 
             if (!response.ok) {
@@ -444,9 +471,15 @@
 
             list.innerHTML = '';
 
-            data.results.forEach((item, index) => {
+            let displayedCount = 50;
+            const visibleResults = data.results.slice(0, displayedCount);
+
+            visibleResults.forEach((item, index) => {
                 const row = document.createElement('div');
-                row.className = 'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
+
+
+                row.className =
+                    'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
 
                 let level;
                 let badgeClass;
@@ -463,47 +496,108 @@
                 }
 
                 row.innerHTML = `
-        <div class="flex items-center gap-4">
-            <span class="font-mono text-xs text-[var(--text-dim)]">
-                #${index + 1}
-            </span>
-            <span class="font-medium">
-                ${item.prediction}
-            </span>
-        </div>
+            
+            <div class="flex items-center gap-4">
+                <span class="font-mono text-xs text-[var(--text-dim)]">
+                    #${index + 1}
+                </span>
+                <span class="font-medium">
+                    ${item.prediction}
+                </span>
+            </div>
 
-        <div class="flex items-center gap-3">
-            <span class="font-mono text-sm">
-                ${item.risk.toFixed(1)}%
-            </span>
-            <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
-                ${level}
-            </span>
-        </div>
-    `;
+            <div class="flex items-center gap-3">
+                <span class="font-mono text-sm">
+                    ${item.risk.toFixed(1)}%
+                </span>
+
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
+                    ${level}
+                </span>
+            </div>
+        `;
 
                 list.appendChild(row);
             });
+            const loadMoreBtn = document.getElementById("loadMoreBtn");
 
+            if (displayedCount < data.results.length) {
+                loadMoreBtn.classList.remove("hidden");
 
+                loadMoreBtn.onclick = () => {
+                    displayedCount += 50;
+                    list.innerHTML = '';
+
+                    data.results.slice(0, displayedCount).forEach((item, index) => {
+                        const row = document.createElement('div');
+
+                        row.className =
+                            'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
+
+                        let level;
+                        let badgeClass;
+
+                        if (item.risk < 35) {
+                            level = 'Low';
+                            badgeClass = 'text-[var(--green)] bg-[#34D39915]';
+                        } else if (item.risk <= 70) {
+                            level = 'Medium';
+                            badgeClass = 'text-[var(--amber)] bg-[#F9731615]';
+                        } else {
+                            level = 'High';
+                            badgeClass = 'text-red-400 bg-red-400/10';
+                        }
+
+                        row.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-[var(--text-dim)]">
+                        #${index + 1}
+                    </span>
+                    <span class="font-medium">${item.prediction}</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="font-mono text-sm">
+                        ${item.risk.toFixed(1)}%
+                    </span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
+                        ${level}
+                    </span>
+                </div>
+            `;
+
+                        list.appendChild(row);
+                    });
+
+                    if (displayedCount >= data.results.length) {
+                        loadMoreBtn.classList.add("hidden");
+                    }
+                };
+            }
 
             count.textContent = `${data.results.length} orders`;
+
+            document.getElementById("downloadBtn").onclick = () =>
+                downloadResults(data.results);
+
             const total = data.results.length;
             const late = data.results.filter(r => r.prediction === "Late").length;
             const onTime = total - late;
-            const avgRisk = data.results.reduce((sum, r) => sum + r.risk, 0) / total;
+
+            const avgRisk =
+                data.results.reduce((sum, r) => sum + r.risk, 0) / total;
 
             document.getElementById("totalOrders").textContent = total;
             document.getElementById("lateOrders").textContent = late;
             document.getElementById("onTimeOrders").textContent = onTime;
-            document.getElementById("avgRisk").textContent = avgRisk.toFixed(1) + "%";
+            document.getElementById("avgRisk").textContent =
+                avgRisk.toFixed(1) + "%";
+
+            document.getElementById("downloadBtn").classList.remove("hidden");
+
             results.classList.remove('hidden');
+
+            clearInterval(messageTimer);
             processing.classList.add("hidden");
         }
-
     </script>
-
-
-</body>
-
-</html>
