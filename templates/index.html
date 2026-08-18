@@ -320,13 +320,54 @@
                         <p id="avgRisk" class="font-mono text-2xl text-[var(--accent)] mt-2">0%</p>
                     </div>
                 </div>
-                <div id="results" class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6">
+                <div id="results"
+                    class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6 border border-[#2A3B5C] shadow-lg">
+
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-display text-xl font-semibold">Prediction Results</h3>
+                        <h3 class="font-display text-xl font-semibold tracking-tight">
+                            Prediction Results
+                            <div class="grid grid-cols-3 gap-3 mb-6">
+                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                                    <p class="text-xs text-[var(--green)]">Low Risk</p>
+                                    <p id="lowRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                                    <p id="lowRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                                </div>
+
+                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                                    <p class="text-xs text-[var(--amber)]">Medium Risk</p>
+                                    <p id="mediumRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                                    <p id="mediumRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                                </div>
+
+                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                                    <p class="text-xs text-red-400">High Risk</p>
+                                    <p id="highRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                                    <p id="highRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <div class="flex justify-between text-xs text-[var(--text-dim)] mb-2">
+                                    <span>Risk Distribution</span>
+                                    <span>Low / Medium / High</span>
+                                </div>
+
+                                <div class="h-3 w-full rounded-full overflow-hidden bg-[var(--surface-2)] flex">
+                                    <div id="lowRiskBar" class="bg-[var(--green)] h-full transition-all duration-500"
+                                        style="width: 0%"></div>
+
+                                    <div id="mediumRiskBar" class="bg-[var(--amber)] h-full transition-all duration-500"
+                                        style="width: 0%"></div>
+
+                                    <div id="highRiskBar" class="bg-red-400 h-full transition-all duration-500"
+                                        style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                        </h3>
                         <span id="result-count" class="font-mono text-xs text-[var(--text-dim)]"></span>
                     </div>
                     <button id="downloadBtn"
-                        class="hidden bg-[var(--accent)] text-[#0A0E1A] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition">
+                        class="hidden mt-4 bg-[var(--accent)] text-[#0A0E1A] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition">
                         Download CSV
                     </button>
 
@@ -340,6 +381,7 @@
                 </div>
 
             </div>
+            <div class="h-px bg-[#2A3B5C] max-w-2xl mx-auto mt-4"></div>
 
         </section>
         <!-- PROCESSING STATE -->
@@ -422,9 +464,13 @@
         function downloadResults(results) {
             const rows = [["Order", "Prediction", "Risk %"]];
 
-            results.forEach((item, index) => {
-                rows.push([index + 1, item.prediction, item.risk]);
-            });
+            for (let i = 0; i < results.length; i++) {
+                rows.push([
+                    i + 1,
+                    results[i].prediction,
+                    results[i].risk
+                ]);
+            }
 
             const csv = rows.map(row => row.join(",")).join("\n");
             const blob = new Blob([csv], { type: "text/csv" });
@@ -433,7 +479,9 @@
             const a = document.createElement("a");
             a.href = url;
             a.download = "chainsight_predictions.csv";
+            document.body.appendChild(a);
             a.click();
+            a.remove();
 
             URL.revokeObjectURL(url);
         }
@@ -453,15 +501,28 @@
             processing.classList.remove("hidden");
             startProcessingMessages();
 
-            const response = await fetch('/predict', {
-                method: 'POST',
-                body: formData
-            });
+            let response;
+            let data;
 
-            const data = await response.json();
+            try {
+                response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                data = await response.json();
+
+            } catch (error) {
+                clearInterval(messageTimer);
+                processing.classList.add("hidden");
+                alert("Something went wrong while processing the file.");
+                return;
+            }
 
             if (!response.ok) {
-                alert(data.error);
+                clearInterval(messageTimer);
+                processing.classList.add("hidden");
+                alert(data.error || "Prediction failed.");
                 return;
             }
 
@@ -470,6 +531,7 @@
             const count = document.getElementById('result-count');
 
             list.innerHTML = '';
+
 
             let displayedCount = 50;
             const visibleResults = data.results.slice(0, displayedCount);
@@ -526,6 +588,8 @@
 
                 loadMoreBtn.onclick = () => {
                     displayedCount += 50;
+                    shownText.textContent =
+                        `Showing ${Math.min(displayedCount, data.results.length)} of ${data.results.length}`;
                     list.innerHTML = '';
 
                     data.results.slice(0, displayedCount).forEach((item, index) => {
@@ -577,10 +641,33 @@
 
             count.textContent = `${data.results.length} orders`;
 
+            const shownText = document.createElement("span");
+            shownText.className = "font-mono text-xs text-[var(--text-dim)] ml-3";
+            shownText.textContent = `Showing ${Math.min(displayedCount, data.results.length)} of ${data.results.length}`;
+            count.appendChild(shownText);
+
+            const total = data.results.length;
+
+            const lowRisk = data.results.filter(r => r.risk < 35).length;
+            const mediumRisk = data.results.filter(r => r.risk >= 35 && r.risk <= 70).length;
+            const highRisk = data.results.filter(r => r.risk > 70).length;
+
+            document.getElementById("lowRiskCount").textContent = lowRisk;
+            document.getElementById("mediumRiskCount").textContent = mediumRisk;
+            document.getElementById("highRiskCount").textContent = highRisk;
+
+            document.getElementById("lowRiskPercent").textContent =
+                ((lowRisk / total) * 100).toFixed(1) + "%";
+
+            document.getElementById("mediumRiskPercent").textContent =
+                ((mediumRisk / total) * 100).toFixed(1) + "%";
+
+            document.getElementById("highRiskPercent").textContent =
+                ((highRisk / total) * 100).toFixed(1) + "%";
+
             document.getElementById("downloadBtn").onclick = () =>
                 downloadResults(data.results);
 
-            const total = data.results.length;
             const late = data.results.filter(r => r.prediction === "Late").length;
             const onTime = total - late;
 
@@ -595,9 +682,18 @@
 
             document.getElementById("downloadBtn").classList.remove("hidden");
 
-            results.classList.remove('hidden');
+            results.classList.remove("hidden");
 
             clearInterval(messageTimer);
             processing.classList.add("hidden");
+            loadMoreBtn.classList.add("hidden");
+            document.getElementById("lowRiskBar").style.width =
+                ((lowRisk / total) * 100) + "%";
+
+            document.getElementById("mediumRiskBar").style.width =
+                ((mediumRisk / total) * 100) + "%";
+
+            document.getElementById("highRiskBar").style.width =
+                ((highRisk / total) * 100) + "%";
         }
     </script>

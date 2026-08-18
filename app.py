@@ -1,6 +1,9 @@
+from time import time
+
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import joblib
+import time
 
 from preprocessing.preprocessing import (
     clean_data,
@@ -32,13 +35,28 @@ def predict():
     try:
         df = pd.read_csv(file, encoding="latin1")
 
+        # X = clean_data(df)
+        # X = encode_data(X, encoders)
+        # X = prepare_for_model(X, model)
+        start = time.time()
+
         X = clean_data(df)
+        print("clean_data:", time.time() - start)
+
+        start = time.time()
         X = encode_data(X, encoders)
+        print("encode_data:", time.time() - start)
+
+        start = time.time()
         X = prepare_for_model(X, model)
-
+        print("prepare_for_model:", time.time() - start)
+        
+        start = time.time()
         predictions = model.predict(X)
+        print("Rows:", len(X))
+        print("Features:", X.shape[1])
         probabilities = model.predict_proba(X)[:, 1]
-
+        print("Prediction time:", time.time() - start)
         results = []
         for prediction, probability in zip(predictions, probabilities):
             results.append({

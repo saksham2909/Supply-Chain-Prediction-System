@@ -68,6 +68,8 @@ print("Testing data:", X_test.shape)
 
 
 
+
+
 # Model training yha se shuru h
 
 from sklearn.linear_model import LogisticRegression
@@ -83,7 +85,7 @@ logistic_model.fit(X_train, y_train)
 # random forest model bana rhe h
 
 rf_model = RandomForestClassifier(
-    n_estimators=100,
+    n_estimators=50,
     random_state=42
 )
 
