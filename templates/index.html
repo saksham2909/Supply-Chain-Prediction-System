@@ -256,6 +256,55 @@
             </div>
         </section>
 
+        <!-- HOW IT WORKS -->
+        <section id="how" class="max-w-4xl mx-auto px-6 pb-24">
+
+            <div class="text-center mb-12 reveal">
+                <p class="eyebrow font-mono uppercase">How it works</p>
+                <h2 class="font-display font-semibold text-3xl mt-3">Three steps to clarity</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="reveal bg-[var(--surface)] rounded-2xl p-6 border border-[#2A3B5C] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-[var(--accent)] opacity-5 -translate-y-8 translate-x-8"></div>
+                    <div class="w-10 h-10 rounded-xl bg-[var(--accent)] bg-opacity-10 flex items-center justify-center mb-4">
+                        <svg width="18" height="18" fill="none" stroke="#38BDF8" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-xs text-[var(--accent)] mb-2">01 / Upload</p>
+                    <h3 class="font-display font-semibold text-lg mb-2">Drop your CSV</h3>
+                    <p class="text-[var(--text-dim)] text-sm leading-relaxed">Drag and drop your DataCo order export — or click to browse. Any size works.</p>
+                </div>
+
+                <div class="reveal bg-[var(--surface)] rounded-2xl p-6 border border-[#2A3B5C] relative overflow-hidden" style="transition-delay: 0.1s">
+                    <div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-[var(--amber)] opacity-5 -translate-y-8 translate-x-8"></div>
+                    <div class="w-10 h-10 rounded-xl bg-[var(--amber)] bg-opacity-10 flex items-center justify-center mb-4">
+                        <svg width="18" height="18" fill="none" stroke="#F97316" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-xs text-[var(--amber)] mb-2">02 / Analyze</p>
+                    <h3 class="font-display font-semibold text-lg mb-2">Model scores every row</h3>
+                    <p class="text-[var(--text-dim)] text-sm leading-relaxed">A Random Forest trained on 180K+ orders evaluates 33 signals per shipment in seconds.</p>
+                </div>
+
+                <div class="reveal bg-[var(--surface)] rounded-2xl p-6 border border-[#2A3B5C] relative overflow-hidden" style="transition-delay: 0.2s">
+                    <div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-[var(--green)] opacity-5 -translate-y-8 translate-x-8"></div>
+                    <div class="w-10 h-10 rounded-xl bg-[var(--green)] bg-opacity-10 flex items-center justify-center mb-4">
+                        <svg width="18" height="18" fill="none" stroke="#34D399" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-xs text-[var(--green)] mb-2">03 / Act</p>
+                    <h3 class="font-display font-semibold text-lg mb-2">Risk scores + export</h3>
+                    <p class="text-[var(--text-dim)] text-sm leading-relaxed">Every order gets a Late / On Time label and a 0–100% risk score. Export to CSV instantly.</p>
+                </div>
+
+            </div>
+        </section>
+
         <!-- UPLOAD SECTION -->
         <section id="upload" class="max-w-2xl mx-auto px-6 pb-32">
 
@@ -320,125 +369,139 @@
                         <p id="avgRisk" class="font-mono text-2xl text-[var(--accent)] mt-2">0%</p>
                     </div>
                 </div>
-                <div id="results"
-                    class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6 border border-[#2A3B5C] shadow-lg">
+                <div id="results" class="hidden mt-8 rounded-2xl bg-[var(--surface)] p-6 border border-[#2A3B5C] shadow-lg">
 
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-display text-xl font-semibold tracking-tight">
-                            Prediction Results
-                            <div class="grid grid-cols-3 gap-3 mb-6">
-                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
-                                    <p class="text-xs text-[var(--green)]">Low Risk</p>
-                                    <p id="lowRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
-                                    <p id="lowRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
-                                </div>
-
-                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
-                                    <p class="text-xs text-[var(--amber)]">Medium Risk</p>
-                                    <p id="mediumRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
-                                    <p id="mediumRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
-                                </div>
-
-                                <div class="rounded-xl bg-[var(--surface-2)] p-4">
-                                    <p class="text-xs text-red-400">High Risk</p>
-                                    <p id="highRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
-                                    <p id="highRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
-                                </div>
-                            </div>
-                            <div class="mb-6">
-                                <div class="flex justify-between text-xs text-[var(--text-dim)] mb-2">
-                                    <span>Risk Distribution</span>
-                                    <span>Low / Medium / High</span>
-                                </div>
-
-                                <div class="h-3 w-full rounded-full overflow-hidden bg-[var(--surface-2)] flex">
-                                    <div id="lowRiskBar" class="bg-[var(--green)] h-full transition-all duration-500"
-                                        style="width: 0%"></div>
-
-                                    <div id="mediumRiskBar" class="bg-[var(--amber)] h-full transition-all duration-500"
-                                        style="width: 0%"></div>
-
-                                    <div id="highRiskBar" class="bg-red-400 h-full transition-all duration-500"
-                                        style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                        </h3>
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-display text-xl font-semibold tracking-tight">Prediction Results</h3>
                         <span id="result-count" class="font-mono text-xs text-[var(--text-dim)]"></span>
                     </div>
-                    <button id="downloadBtn"
-                        class="hidden mt-4 bg-[var(--accent)] text-[#0A0E1A] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition">
-                        Download CSV
-                    </button>
 
-                    <div class="overflow-x-auto rounded-xl border border-[#2A3B5C]">
-                        <div id="result-list" class="max-h-96 overflow-y-auto"></div>
-                        <button id="loadMoreBtn"
-                            class="hidden w-full mt-4 py-2 rounded-lg bg-[var(--surface-2)] text-sm text-[var(--text-dim)] hover:text-[var(--text)] transition">
-                            Load More
-                        </button>
+                    <!-- Late vs On-Time bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-[var(--text-dim)] mb-2">
+                            <span class="flex items-center gap-3">
+                                <span class="flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-[var(--green)]"></span> On-Time</span>
+                                <span class="flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-red-400"></span> Late</span>
+                            </span>
+                            <span id="predictionSummary"></span>
+                        </div>
+                        <div class="h-3 w-full rounded-full overflow-hidden bg-[var(--surface-2)] flex">
+                            <div id="onTimeBar" class="bg-[var(--green)] h-full transition-all duration-500" style="width:0%"></div>
+                            <div id="lateBar" class="bg-red-400 h-full transition-all duration-500" style="width:0%"></div>
+                        </div>
                     </div>
+
+                    <!-- Risk breakdown grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                        <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                            <p class="text-xs text-[var(--green)]">Low Risk</p>
+                            <p id="lowRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                            <p id="lowRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                        </div>
+                        <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                            <p class="text-xs text-[var(--amber)]">Medium Risk</p>
+                            <p id="mediumRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                            <p id="mediumRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                        </div>
+                        <div class="rounded-xl bg-[var(--surface-2)] p-4">
+                            <p class="text-xs text-red-400">High Risk</p>
+                            <p id="highRiskCount" class="font-mono text-xl font-semibold mt-1">0</p>
+                            <p id="highRiskPercent" class="text-xs text-[var(--text-dim)] mt-1">0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Risk distribution bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-[var(--text-dim)] mb-2">
+                            <span class="flex items-center gap-3">
+                                <span class="flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-[var(--green)]"></span> Low</span>
+                                <span class="flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-[var(--amber)]"></span> Med</span>
+                                <span class="flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-red-400"></span> High</span>
+                            </span>
+                            <span>Risk Distribution</span>
+                        </div>
+                        <div class="h-3 w-full rounded-full overflow-hidden bg-[var(--surface-2)] flex">
+                            <div id="lowRiskBar" class="bg-[var(--green)] h-full transition-all duration-500" style="width:0%"></div>
+                            <div id="mediumRiskBar" class="bg-[var(--amber)] h-full transition-all duration-500" style="width:0%"></div>
+                            <div id="highRiskBar" class="bg-red-400 h-full transition-all duration-500" style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 highest-risk orders -->
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-display font-semibold text-sm">Highest-Risk Orders</h4>
+                            <span class="text-xs text-[var(--text-dim)]">Top 10</span>
+                        </div>
+                        <div id="topRiskList" class="space-y-2"></div>
+                    </div>
+
                 </div>
 
-            </div>
-            <div class="h-px bg-[#2A3B5C] max-w-2xl mx-auto mt-4"></div>
+                <button id="downloadBtn"
+                    class="hidden mt-4 bg-[var(--accent)] text-[#0A0E1A] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition">
+                    Download CSV
+                </button>
 
-        </section>
-        <!-- PROCESSING STATE -->
-        <div id="processing" class="hidden max-w-2xl mx-auto px-6 pb-20 text-center">
-            <div class="w-14 h-14 mx-auto rounded-full border-2 border-[var(--surface-2)]
+                <div class="mt-4 rounded-xl border border-[#2A3B5C] overflow-hidden">
+                    <div id="result-list" class="max-h-96 overflow-y-auto"></div>
+                    <button id="loadMoreBtn"
+                        class="hidden w-full py-2 bg-[var(--surface-2)] text-sm text-[var(--text-dim)] hover:text-[var(--text)] transition">
+                        Load More
+                    </button>
+                </div>
+            </div>
+
+    </div>
+    <div class="h-px bg-[#2A3B5C] max-w-2xl mx-auto mt-4"></div>
+
+    </section>
+    <!-- PROCESSING STATE -->
+    <div id="processing" class="hidden max-w-2xl mx-auto px-6 pb-20 text-center">
+        <div class="w-14 h-14 mx-auto rounded-full border-2 border-[var(--surface-2)]
               border-t-[var(--accent)] animate-spin"></div>
 
-            <h3 class="font-display text-xl font-semibold mt-6">Analyzing your orders</h3>
+        <h3 class="font-display text-xl font-semibold mt-6">Analyzing your orders</h3>
 
-            <p id="processingText" class="font-mono text-xs text-[var(--accent)] mt-3">
-                Reading order data...
-            </p>
+        <p id="processingText" class="font-mono text-xs text-[var(--accent)] mt-3">
+            Reading order data...
+        </p>
 
-            <div class="w-64 h-1 bg-[var(--surface-2)] rounded-full mx-auto mt-6 overflow-hidden">
-                <div class="h-full bg-[var(--accent)] animate-pulse w-2/3"></div>
-            </div>
+        <div class="w-64 h-1 bg-[var(--surface-2)] rounded-full mx-auto mt-6 overflow-hidden">
+            <div class="h-full bg-[var(--accent)] animate-pulse w-2/3"></div>
         </div>
+    </div>
     </div>
 
     <script>
-        const items = document.querySelectorAll('.reveal');
-
+        // ── Scroll-reveal animations ──────────────────────────────────────────
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('in');
-                    io.unobserve(e.target);
-                }
+                if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
             });
         }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-        items.forEach(i => io.observe(i));
-
+        // ── Drag-and-drop / file input ────────────────────────────────────────
         const dropzone = document.querySelector('.dropzone');
-        const input = document.createElement('input');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.csv';
+        fileInput.hidden = true;
+        document.body.appendChild(fileInput);
 
-        input.type = 'file';
-        input.accept = '.csv';
-        input.hidden = true;
-        document.body.appendChild(input);
-
-        dropzone.onclick = () => input.click();
-        input.onchange = () => uploadFile(input.files[0]);
-
-        dropzone.ondragover = e => {
-            e.preventDefault();
-            dropzone.classList.add('drag');
-        };
-
+        dropzone.onclick = () => fileInput.click();
+        fileInput.onchange = () => uploadFile(fileInput.files[0]);
+        dropzone.ondragover = e => { e.preventDefault(); dropzone.classList.add('drag'); };
         dropzone.ondragleave = () => dropzone.classList.remove('drag');
-
         dropzone.ondrop = e => {
             e.preventDefault();
             dropzone.classList.remove('drag');
             uploadFile(e.dataTransfer.files[0]);
         };
 
+        // ── Processing spinner messages ───────────────────────────────────────
         const processingMessages = [
             "Analyzing orders...",
             "Checking pipeline...",
@@ -446,7 +509,6 @@
             "Running predictions...",
             "Calculating risk..."
         ];
-
         let messageIndex = 0;
         let messageTimer;
 
@@ -454,38 +516,50 @@
             const text = document.getElementById("processingText");
             messageIndex = 0;
             text.textContent = processingMessages[0];
-
             messageTimer = setInterval(() => {
                 messageIndex = (messageIndex + 1) % processingMessages.length;
                 text.textContent = processingMessages[messageIndex];
             }, 900);
         }
 
+        // ── CSV export ────────────────────────────────────────────────────────
         function downloadResults(results) {
             const rows = [["Order", "Prediction", "Risk %"]];
-
-            for (let i = 0; i < results.length; i++) {
-                rows.push([
-                    i + 1,
-                    results[i].prediction,
-                    results[i].risk
-                ]);
-            }
-
-            const csv = rows.map(row => row.join(",")).join("\n");
-            const blob = new Blob([csv], { type: "text/csv" });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "chainsight_predictions.csv";
+            results.forEach((r, i) => rows.push([i + 1, r.prediction, r.risk]));
+            const csv = rows.map(r => r.join(",")).join("\n");
+            const a = Object.assign(document.createElement("a"), {
+                href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })),
+                download: "chainsight_predictions.csv"
+            });
             document.body.appendChild(a);
             a.click();
             a.remove();
-
-            URL.revokeObjectURL(url);
         }
 
+        // ── Shared row renderer ───────────────────────────────────────────────
+        function riskBadge(risk) {
+            if (risk < 35)  return { level: 'Low',    cls: 'text-[var(--green)] bg-[#34D39915]' };
+            if (risk <= 70) return { level: 'Medium', cls: 'text-[var(--amber)] bg-[#F9731615]' };
+            return             { level: 'High',   cls: 'text-red-400 bg-red-400/10' };
+        }
+
+        function renderRow(item, index) {
+            const { level, cls } = riskBadge(item.risk);
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
+            row.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-[var(--text-dim)]">#${index + 1}</span>
+                    <span class="font-medium">${item.prediction}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-mono text-sm">${item.risk.toFixed(1)}%</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium ${cls}">${level}</span>
+                </div>`;
+            return row;
+        }
+
+        // ── Main upload + predict handler ─────────────────────────────────────
         async function uploadFile(file) {
             if (!file || !file.name.toLowerCase().endsWith('.csv')) {
                 alert('Please upload a CSV file.');
@@ -494,206 +568,109 @@
 
             const formData = new FormData();
             formData.append('file', file);
-
             dropzone.querySelector('p').textContent = 'Processing ' + file.name + '...';
 
             const processing = document.getElementById("processing");
             processing.classList.remove("hidden");
             startProcessingMessages();
 
-            let response;
-            let data;
-
+            let response, data;
             try {
-                response = await fetch('/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-
+                response = await fetch('/predict', { method: 'POST', body: formData });
                 data = await response.json();
-
-            } catch (error) {
+            } catch (err) {
                 clearInterval(messageTimer);
                 processing.classList.add("hidden");
                 alert("Something went wrong while processing the file.");
                 return;
             }
 
+            // ── Stop spinner immediately on response ──────────────────────────
+            clearInterval(messageTimer);
+            processing.classList.add("hidden");
+
             if (!response.ok) {
-                clearInterval(messageTimer);
-                processing.classList.add("hidden");
                 alert(data.error || "Prediction failed.");
                 return;
             }
 
-            const results = document.getElementById('results');
-            const list = document.getElementById('result-list');
-            const count = document.getElementById('result-count');
+            // ── Derived counts (declare before use) ───────────────────────────
+            const total     = data.results.length;
+            const late      = data.results.filter(r => r.prediction === "Late").length;
+            const onTime    = total - late;
+            const lowRisk   = data.results.filter(r => r.risk < 35).length;
+            const mediumRisk = data.results.filter(r => r.risk >= 35 && r.risk <= 70).length;
+            const highRisk  = data.results.filter(r => r.risk > 70).length;
+            const avgRisk   = data.results.reduce((s, r) => s + r.risk, 0) / total;
 
-            list.innerHTML = '';
+            // ── Stats strip ───────────────────────────────────────────────────
+            document.getElementById("totalOrders").textContent  = total;
+            document.getElementById("lateOrders").textContent   = late;
+            document.getElementById("onTimeOrders").textContent = onTime;
+            document.getElementById("avgRisk").textContent      = avgRisk.toFixed(1) + "%";
 
+            // ── Late vs On-Time bar ───────────────────────────────────────────
+            const onTimePct = (onTime / total) * 100;
+            const latePct   = (late  / total) * 100;
+            document.getElementById("onTimeBar").style.width = onTimePct + "%";
+            document.getElementById("lateBar").style.width   = latePct  + "%";
+            document.getElementById("predictionSummary").textContent =
+                `${onTimePct.toFixed(1)}% On-Time · ${latePct.toFixed(1)}% Late`;
 
-            let displayedCount = 50;
-            const visibleResults = data.results.slice(0, displayedCount);
+            // ── Risk breakdown grid ───────────────────────────────────────────
+            document.getElementById("lowRiskCount").textContent    = lowRisk;
+            document.getElementById("mediumRiskCount").textContent = mediumRisk;
+            document.getElementById("highRiskCount").textContent   = highRisk;
+            document.getElementById("lowRiskPercent").textContent    = ((lowRisk   / total) * 100).toFixed(1) + "%";
+            document.getElementById("mediumRiskPercent").textContent = ((mediumRisk / total) * 100).toFixed(1) + "%";
+            document.getElementById("highRiskPercent").textContent   = ((highRisk  / total) * 100).toFixed(1) + "%";
 
-            visibleResults.forEach((item, index) => {
-                const row = document.createElement('div');
+            // ── Risk distribution bar ─────────────────────────────────────────
+            document.getElementById("lowRiskBar").style.width    = ((lowRisk   / total) * 100) + "%";
+            document.getElementById("mediumRiskBar").style.width = ((mediumRisk / total) * 100) + "%";
+            document.getElementById("highRiskBar").style.width   = ((highRisk  / total) * 100) + "%";
 
+            // ── Top 10 highest-risk orders ────────────────────────────────────
+            const topRiskList = document.getElementById("topRiskList");
+            topRiskList.innerHTML = "";
+            [...data.results]
+                .sort((a, b) => b.risk - a.risk)
+                .slice(0, 10)
+                .forEach((item, index) => {
+                    const { level, cls } = riskBadge(item.risk);
+                    const row = document.createElement("div");
+                    row.className = "flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2";
+                    row.innerHTML = `
+                        <span class="font-mono text-xs text-[var(--text-dim)]">#${index + 1}</span>
+                        <span class="font-medium">${item.prediction}</span>
+                        <span class="font-mono text-sm text-red-400">${item.risk.toFixed(1)}%</span>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-medium ${cls}">${level}</span>`;
+                    topRiskList.appendChild(row);
+                });
 
-                row.className =
-                    'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
-
-                let level;
-                let badgeClass;
-
-                if (item.risk < 35) {
-                    level = 'Low';
-                    badgeClass = 'text-[var(--green)] bg-[#34D39915]';
-                } else if (item.risk <= 70) {
-                    level = 'Medium';
-                    badgeClass = 'text-[var(--amber)] bg-[#F9731615]';
-                } else {
-                    level = 'High';
-                    badgeClass = 'text-red-400 bg-red-400/10';
-                }
-
-                row.innerHTML = `
-            
-            <div class="flex items-center gap-4">
-                <span class="font-mono text-xs text-[var(--text-dim)]">
-                    #${index + 1}
-                </span>
-                <span class="font-medium">
-                    ${item.prediction}
-                </span>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <span class="font-mono text-sm">
-                    ${item.risk.toFixed(1)}%
-                </span>
-
-                <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
-                    ${level}
-                </span>
-            </div>
-        `;
-
-                list.appendChild(row);
-            });
+            // ── Paginated results table ───────────────────────────────────────
+            const list        = document.getElementById('result-list');
+            const countEl     = document.getElementById('result-count');
             const loadMoreBtn = document.getElementById("loadMoreBtn");
+            let displayedCount = 50;
 
-            if (displayedCount < data.results.length) {
-                loadMoreBtn.classList.remove("hidden");
-
-                loadMoreBtn.onclick = () => {
-                    displayedCount += 50;
-                    shownText.textContent =
-                        `Showing ${Math.min(displayedCount, data.results.length)} of ${data.results.length}`;
-                    list.innerHTML = '';
-
-                    data.results.slice(0, displayedCount).forEach((item, index) => {
-                        const row = document.createElement('div');
-
-                        row.className =
-                            'flex items-center justify-between p-3 rounded-lg bg-[var(--surface-2)] mb-2';
-
-                        let level;
-                        let badgeClass;
-
-                        if (item.risk < 35) {
-                            level = 'Low';
-                            badgeClass = 'text-[var(--green)] bg-[#34D39915]';
-                        } else if (item.risk <= 70) {
-                            level = 'Medium';
-                            badgeClass = 'text-[var(--amber)] bg-[#F9731615]';
-                        } else {
-                            level = 'High';
-                            badgeClass = 'text-red-400 bg-red-400/10';
-                        }
-
-                        row.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <span class="font-mono text-xs text-[var(--text-dim)]">
-                        #${index + 1}
-                    </span>
-                    <span class="font-medium">${item.prediction}</span>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <span class="font-mono text-sm">
-                        ${item.risk.toFixed(1)}%
-                    </span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass}">
-                        ${level}
-                    </span>
-                </div>
-            `;
-
-                        list.appendChild(row);
-                    });
-
-                    if (displayedCount >= data.results.length) {
-                        loadMoreBtn.classList.add("hidden");
-                    }
-                };
+            function renderPage() {
+                list.innerHTML = '';
+                data.results.slice(0, displayedCount).forEach((item, i) => list.appendChild(renderRow(item, i)));
+                countEl.textContent = `${total} orders · Showing ${Math.min(displayedCount, total)} of ${total}`;
+                if (displayedCount >= total) {
+                    loadMoreBtn.classList.add("hidden");
+                } else {
+                    loadMoreBtn.classList.remove("hidden");
+                }
             }
 
-            count.textContent = `${data.results.length} orders`;
+            loadMoreBtn.onclick = () => { displayedCount += 50; renderPage(); };
+            renderPage();
 
-            const shownText = document.createElement("span");
-            shownText.className = "font-mono text-xs text-[var(--text-dim)] ml-3";
-            shownText.textContent = `Showing ${Math.min(displayedCount, data.results.length)} of ${data.results.length}`;
-            count.appendChild(shownText);
-
-            const total = data.results.length;
-
-            const lowRisk = data.results.filter(r => r.risk < 35).length;
-            const mediumRisk = data.results.filter(r => r.risk >= 35 && r.risk <= 70).length;
-            const highRisk = data.results.filter(r => r.risk > 70).length;
-
-            document.getElementById("lowRiskCount").textContent = lowRisk;
-            document.getElementById("mediumRiskCount").textContent = mediumRisk;
-            document.getElementById("highRiskCount").textContent = highRisk;
-
-            document.getElementById("lowRiskPercent").textContent =
-                ((lowRisk / total) * 100).toFixed(1) + "%";
-
-            document.getElementById("mediumRiskPercent").textContent =
-                ((mediumRisk / total) * 100).toFixed(1) + "%";
-
-            document.getElementById("highRiskPercent").textContent =
-                ((highRisk / total) * 100).toFixed(1) + "%";
-
-            document.getElementById("downloadBtn").onclick = () =>
-                downloadResults(data.results);
-
-            const late = data.results.filter(r => r.prediction === "Late").length;
-            const onTime = total - late;
-
-            const avgRisk =
-                data.results.reduce((sum, r) => sum + r.risk, 0) / total;
-
-            document.getElementById("totalOrders").textContent = total;
-            document.getElementById("lateOrders").textContent = late;
-            document.getElementById("onTimeOrders").textContent = onTime;
-            document.getElementById("avgRisk").textContent =
-                avgRisk.toFixed(1) + "%";
-
+            // ── Show panel + export button ────────────────────────────────────
+            document.getElementById("downloadBtn").onclick = () => downloadResults(data.results);
             document.getElementById("downloadBtn").classList.remove("hidden");
-
-            results.classList.remove("hidden");
-
-            clearInterval(messageTimer);
-            processing.classList.add("hidden");
-            loadMoreBtn.classList.add("hidden");
-            document.getElementById("lowRiskBar").style.width =
-                ((lowRisk / total) * 100) + "%";
-
-            document.getElementById("mediumRiskBar").style.width =
-                ((mediumRisk / total) * 100) + "%";
-
-            document.getElementById("highRiskBar").style.width =
-                ((highRisk / total) * 100) + "%";
+            document.getElementById("results").classList.remove("hidden");
         }
     </script>
